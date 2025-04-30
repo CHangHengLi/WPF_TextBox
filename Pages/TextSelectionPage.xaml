@@ -1,0 +1,198 @@
+<Page
+    x:Class="TextBoxDemo.Pages.TextSelectionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TextBoxDemo.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="文本选择与操作"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Background="Wheat"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Margin="20">
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="TextBox 文本选择与操作" />
+
+            <Grid Margin="0,20,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  文本选择与SelectionStart/SelectionLength属性  -->
+                <GroupBox
+                    Grid.Row="0"
+                    Margin="0,0,0,10"
+                    Padding="10"
+                    Header="文本选择操作">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5" Text="示例文本框：" />
+                        <TextBox
+                            x:Name="txtSelection"
+                            SelectionChanged="TxtSelection_SelectionChanged"
+                            Style="{StaticResource BaseTextBoxStyle}"
+                            Text="这是一个可以演示文本选择功能的TextBox控件" />
+
+                        <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="选择起始位置: " />
+                            <TextBlock
+                                x:Name="txtSelectionStart"
+                                Margin="5,0"
+                                VerticalAlignment="Center"
+                                Text="0" />
+                            <TextBlock
+                                Margin="15,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="选择长度: " />
+                            <TextBlock
+                                x:Name="txtSelectionLength"
+                                Margin="5,0"
+                                VerticalAlignment="Center"
+                                Text="0" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <Button
+                                Margin="0,0,5,0"
+                                Click="SelectAll_Click"
+                                Content="全选" />
+                            <Button
+                                Margin="0,0,5,0"
+                                Click="SelectFirst5_Click"
+                                Content="选择前5个字符" />
+                            <Button Click="SelectLast5_Click" Content="选择最后5个字符" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <!--  SelectedText属性  -->
+                <GroupBox
+                    Grid.Row="1"
+                    Margin="0,0,0,10"
+                    Padding="10"
+                    Header="选中文本内容 (SelectedText)">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5" Text="原始文本框：" />
+                        <TextBox
+                            x:Name="txtOriginal"
+                            SelectionChanged="TxtOriginal_SelectionChanged"
+                            Style="{StaticResource BaseTextBoxStyle}"
+                            Text="请选择此文本框中的某些文字" />
+
+                        <TextBlock Margin="0,10,0,5" Text="选中的文本内容：" />
+                        <TextBox
+                            x:Name="txtSelectedText"
+                            IsReadOnly="True"
+                            Style="{StaticResource BaseTextBoxStyle}" />
+
+                        <Button
+                            Margin="0,10,0,0"
+                            Click="ReplaceSelected_Click"
+                            Content="替换选中文本" />
+                    </StackPanel>
+                </GroupBox>
+
+                <!--  插入符号位置 CaretIndex  -->
+                <GroupBox
+                    Grid.Row="2"
+                    Margin="0,0,0,10"
+                    Padding="10"
+                    Header="插入符号位置 (CaretIndex)">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5" Text="当前文本框：" />
+                        <TextBox
+                            x:Name="txtCaret"
+                            SelectionChanged="TxtCaret_SelectionChanged"
+                            Style="{StaticResource BaseTextBoxStyle}"
+                            Text="在此文本框中移动光标查看位置" />
+
+                        <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="光标位置: " />
+                            <TextBlock
+                                x:Name="txtCaretIndex"
+                                Margin="5,0"
+                                VerticalAlignment="Center"
+                                Text="0" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <Button
+                                Margin="0,0,5,0"
+                                Click="MoveToStart_Click"
+                                Content="移动到开始" />
+                            <Button
+                                Margin="0,0,5,0"
+                                Click="MoveToEnd_Click"
+                                Content="移动到结尾" />
+                            <Button Click="MoveTo10_Click" Content="移动到位置10" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <!--  文本统计功能  -->
+                <GroupBox
+                    Grid.Row="3"
+                    Margin="0,0,0,10"
+                    Padding="10"
+                    Header="文本统计功能">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5" Text="输入或粘贴文本进行统计：" />
+                        <TextBox
+                            x:Name="txtContent"
+                            Height="80"
+                            AcceptsReturn="True"
+                            Style="{StaticResource BaseTextBoxStyle}"
+                            TextChanged="TxtContent_TextChanged"
+                            TextWrapping="Wrap" />
+
+                        <StackPanel Margin="0,10,0,0">
+                            <TextBlock
+                                x:Name="txtCharCount"
+                                Margin="0,0,0,5"
+                                Text="字符数: 0" />
+                            <TextBlock
+                                x:Name="txtLineCount"
+                                Margin="0,0,0,5"
+                                Text="行数: 0" />
+                            <TextBlock
+                                x:Name="txtSelectedStats"
+                                Margin="0,0,0,5"
+                                Text="选中: 0个字符" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+
+            <!--  说明信息  -->
+            <Border
+                Margin="0,20,0,0"
+                Padding="10"
+                Background="#F5F5F5"
+                BorderBrush="LightGray"
+                BorderThickness="1">
+                <TextBlock TextWrapping="Wrap">
+                    <Run FontWeight="Bold">TextBox 文本选择与操作属性说明:</Run>
+                    <LineBreak />
+                    <Run>• SelectionStart: 获取或设置选定内容的起始位置</Run>
+                    <LineBreak />
+                    <Run>• SelectionLength: 获取或设置选定内容的长度</Run>
+                    <LineBreak />
+                    <Run>• SelectedText: 获取或设置选定的文本</Run>
+                    <LineBreak />
+                    <Run>• CaretIndex: 获取或设置插入符号（光标）位置</Run>
+                    <LineBreak />
+                    <Run>• Select(start,length): 选择指定范围的文本</Run>
+                    <LineBreak />
+                    <Run>• SelectAll(): 选择所有文本</Run>
+                    <LineBreak />
+                    <Run>• Clear(): 清除所有文本</Run>
+                </TextBlock>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page> 

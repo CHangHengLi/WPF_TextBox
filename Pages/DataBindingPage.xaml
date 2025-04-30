@@ -1,0 +1,278 @@
+<Page
+    x:Class="TextBoxDemo.Pages.DataBindingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TextBoxDemo.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="数据绑定"
+    d:DesignHeight="1500"
+    d:DesignWidth="800"
+    Background="Wheat"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <local:BoolToYesNoConverter x:Key="boolToYesNoConverter" />
+        <local:StringToUpperConverter x:Key="stringToUpperConverter" />
+        <local:PriceConverter x:Key="priceConverter" />
+        <local:DateConverter x:Key="dateConverter" />
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Margin="20">
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="TextBox 文本绑定" />
+
+            <Grid Margin="0,20,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  基本绑定  -->
+                <GroupBox
+                    Grid.Row="0"
+                    Margin="0,0,0,15"
+                    Padding="10"
+                    Header="基本绑定">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5" Text="基本的Text属性绑定：" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="60"
+                                VerticalAlignment="Center"
+                                Text="姓名：" />
+                            <TextBox
+                                x:Name="txtName"
+                                Width="200"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding Name}" />
+                        </StackPanel>
+
+                        <TextBlock Margin="0,10,0,5" Text="绑定显示：" />
+                        <TextBlock
+                            Margin="60,0,0,0"
+                            FontStyle="Italic"
+                            Text="{Binding Name}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <!--  绑定模式  -->
+                <GroupBox
+                    Grid.Row="1"
+                    Margin="0,0,0,15"
+                    Padding="10"
+                    Header="绑定模式">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5" Text="不同绑定模式的TextBox：" />
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="双向 (TwoWay)：" />
+                            <TextBox
+                                Width="200"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="单向 (OneWay)：" />
+                            <TextBox
+                                Width="200"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding Email, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="一次性 (OneTime)：" />
+                            <TextBox
+                                Width="200"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding Email, Mode=OneTime}" />
+                        </StackPanel>
+
+                        <Button
+                            Width="120"
+                            Margin="0,10,0,0"
+                            Click="UpdateEmail_Click"
+                            Content="更新Email值" />
+                        <TextBlock
+                            Margin="0,5,0,0"
+                            FontStyle="Italic"
+                            Text="注意：观察更新后OneWay会更新值，而OneTime不会" />
+                    </StackPanel>
+                </GroupBox>
+
+                <!--  更新触发器  -->
+                <GroupBox
+                    Grid.Row="2"
+                    Margin="0,0,0,15"
+                    Padding="10"
+                    Header="更新触发器 (UpdateSourceTrigger)">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5" Text="不同更新触发器的TextBox：" />
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="PropertyChanged：" />
+                            <TextBox
+                                x:Name="txtPropertyChanged"
+                                Width="100"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="LostFocus：" />
+                            <TextBox
+                                x:Name="txtLostFocus"
+                                Width="100"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding Age, UpdateSourceTrigger=LostFocus}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="Explicit：" />
+                            <TextBox
+                                x:Name="txtExplicit"
+                                Width="100"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding Age, UpdateSourceTrigger=Explicit}" />
+                            <Button
+                                Margin="10,0,0,0"
+                                Click="UpdateExplicit_Click"
+                                Content="更新" />
+                        </StackPanel>
+
+                        <TextBlock Margin="0,10,0,5" Text="当前年龄值：" />
+                        <TextBlock
+                            Margin="10,0,0,0"
+                            FontWeight="Bold"
+                            Text="{Binding Age}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <!--  值转换器  -->
+                <GroupBox
+                    Grid.Row="3"
+                    Margin="0,0,0,15"
+                    Padding="10"
+                    Header="值转换器">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5" Text="使用值转换器进行数据转换：" />
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="是否活跃：" />
+                            <TextBox
+                                Width="100"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding IsActive, Converter={StaticResource boolToYesNoConverter}}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="转换为大写：" />
+                            <TextBox
+                                x:Name="txtLowercase"
+                                Width="200"
+                                Style="{StaticResource BaseTextBoxStyle}" />
+                            <TextBlock
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Text, ElementName=txtLowercase, Converter={StaticResource stringToUpperConverter}}" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <!--  其他绑定特性  -->
+                <GroupBox
+                    Grid.Row="4"
+                    Margin="0,0,0,15"
+                    Padding="10"
+                    Header="其他绑定特性">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,5" Text="其他绑定特性示例：" />
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="字符串格式化：" />
+                            <TextBox
+                                Width="100"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding Price, Converter={StaticResource priceConverter}}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="Null值处理：" />
+                            <TextBox
+                                Width="200"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding Address, TargetNullValue='[未设置地址]'}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="120"
+                                VerticalAlignment="Center"
+                                Text="日期格式化：" />
+                            <TextBox
+                                Width="150"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Text="{Binding BirthDate, Converter={StaticResource dateConverter}}" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+
+            <!--  说明信息  -->
+            <Border
+                Margin="0,20,0,0"
+                Padding="10"
+                Background="#F5F5F5"
+                BorderBrush="LightGray"
+                BorderThickness="1">
+                <TextBlock TextWrapping="Wrap">
+                    <Run FontWeight="Bold">TextBox 数据绑定说明:</Run>
+                    <LineBreak />
+                    <Run>• 绑定模式：TwoWay(双向)、OneWay(单向)、OneTime(一次性)、OneWayToSource(反向)</Run>
+                    <LineBreak />
+                    <Run>• 更新触发器：PropertyChanged(实时)、LostFocus(失焦时)、Explicit(手动)</Run>
+                    <LineBreak />
+                    <Run>• 值转换器：通过实现IValueConverter接口创建自定义转换器</Run>
+                    <LineBreak />
+                    <Run>• StringFormat：格式化显示的文本</Run>
+                    <LineBreak />
+                    <Run>• TargetNullValue：当绑定源为null时显示的值</Run>
+                </TextBlock>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page> 

@@ -1,0 +1,338 @@
+<Page
+    x:Class="TextBoxDemo.Pages.UndoRedoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TextBoxDemo.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="撤销和重做支持"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Background="Wheat"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20">
+                <TextBlock
+                    Margin="0,0,0,20"
+                    Style="{StaticResource TitleTextBlockStyle}"
+                    Text="TextBox 撤销和重做支持" />
+
+                <!--  基本撤销重做示例  -->
+                <Border Style="{StaticResource SectionBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="基本撤销重做" />
+                        <TextBlock Margin="0,5,0,10" TextWrapping="Wrap">
+                            <Run Text="TextBox默认支持撤销（Undo）和重做（Redo）操作。可以通过键盘快捷键（Ctrl+Z撤销，Ctrl+Y重做）或编程方式调用这些功能。" />
+                            <LineBreak />
+                            <Run Text="在下面的文本框中输入一些内容，然后尝试使用键盘快捷键或下方的按钮进行撤销和重做操作。" />
+                        </TextBlock>
+
+                        <TextBox
+                            x:Name="BasicUndoRedoTextBox"
+                            Height="80"
+                            Margin="0,0,0,10"
+                            AcceptsReturn="True"
+                            Text="在此处输入文本，然后尝试撤销和重做操作"
+                            TextWrapping="Wrap" />
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <Button
+                                Width="100"
+                                Margin="0,0,10,0"
+                                Click="UndoBasic_Click"
+                                Content="撤销" />
+                            <Button
+                                Width="100"
+                                Margin="0,0,10,0"
+                                Click="RedoBasic_Click"
+                                Content="重做" />
+                            <Button
+                                Width="100"
+                                Click="ClearBasic_Click"
+                                Content="清空" />
+                        </StackPanel>
+
+                        <TextBlock
+                            x:Name="BasicOperationStatus"
+                            Margin="0,10,0,0"
+                            Foreground="Green" />
+                    </StackPanel>
+                </Border>
+
+                <!--  控制撤销重做功能  -->
+                <Border Margin="0,20,0,0" Style="{StaticResource SectionBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="控制撤销重做功能" />
+                        <TextBlock Margin="0,5,0,10" TextWrapping="Wrap">
+                            <Run Text="通过IsUndoEnabled属性，可以启用或禁用TextBox的撤销重做功能。当设置为False时，TextBox将不会记录操作历史，无法执行撤销和重做操作。" />
+                        </TextBlock>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,0,10,5"
+                                Text="启用撤销/重做 (IsUndoEnabled=True)" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="10,0,0,5"
+                                Text="禁用撤销/重做 (IsUndoEnabled=False)" />
+
+                            <TextBox
+                                x:Name="UndoEnabledTextBox"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Height="80"
+                                Margin="0,0,10,0"
+                                AcceptsReturn="True"
+                                IsUndoEnabled="True"
+                                Text="此文本框启用了撤销/重做功能"
+                                TextWrapping="Wrap" />
+
+                            <TextBox
+                                x:Name="UndoDisabledTextBox"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Height="80"
+                                Margin="10,0,0,0"
+                                AcceptsReturn="True"
+                                IsUndoEnabled="False"
+                                Text="此文本框禁用了撤销/重做功能"
+                                TextWrapping="Wrap" />
+                        </Grid>
+
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <CheckBox
+                                x:Name="IsUndoEnabledCheckBox"
+                                Click="IsUndoEnabledCheckBox_Click"
+                                Content="启用/禁用撤销功能"
+                                IsChecked="True" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!--  编程撤销和重做限制  -->
+                <Border Margin="0,20,0,0" Style="{StaticResource SectionBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="撤销和重做的编程控制" />
+                        <TextBlock Margin="0,5,0,10" TextWrapping="Wrap">
+                            <Run Text="通过TextBox的Undo()和Redo()方法，可以编程方式执行撤销和重做操作。CanUndo和CanRedo属性可以检查是否有可以撤销或重做的操作。" />
+                            <LineBreak />
+                            <Run Text="下面的示例显示了如何使用这些属性来控制按钮的可用性，以及如何设置撤销/重做的限制。" />
+                        </TextBlock>
+
+                        <TextBox
+                            x:Name="ProgrammaticUndoRedoTextBox"
+                            Height="80"
+                            AcceptsReturn="True"
+                            Text="此文本框设置了最大撤销限制为5步"
+                            TextChanged="ProgrammaticUndoRedoTextBox_TextChanged"
+                            TextWrapping="Wrap"
+                            UndoLimit="5" />
+
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <Button
+                                    x:Name="UndoButton"
+                                    Width="100"
+                                    HorizontalAlignment="Left"
+                                    Click="UndoProgrammatic_Click"
+                                    Content="撤销"
+                                    IsEnabled="False" />
+                                <TextBlock Margin="0,5,0,0" Text="状态：" />
+                                <TextBlock x:Name="UndoStatusTextBlock" Text="没有可撤销的操作" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <Button
+                                    x:Name="RedoButton"
+                                    Width="100"
+                                    HorizontalAlignment="Left"
+                                    Click="RedoProgrammatic_Click"
+                                    Content="重做"
+                                    IsEnabled="False" />
+                                <TextBlock Margin="0,5,0,0" Text="状态：" />
+                                <TextBlock x:Name="RedoStatusTextBlock" Text="没有可重做的操作" />
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Margin="0,10,0,0">
+                            <TextBlock Margin="0,0,0,5" Text="撤销限制设置：" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="UndoLimit: " />
+                                <ComboBox
+                                    x:Name="UndoLimitComboBox"
+                                    Width="100"
+                                    SelectionChanged="UndoLimitComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="1" />
+                                    <ComboBoxItem Content="3" />
+                                    <ComboBoxItem Content="5" IsSelected="True" />
+                                    <ComboBoxItem Content="10" />
+                                    <ComboBoxItem Content="20" />
+                                    <ComboBoxItem Content="50" />
+                                </ComboBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!--  撤销单元  -->
+                <Border Margin="0,20,0,0" Style="{StaticResource SectionBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="撤销单元（UndoAction）" />
+                        <TextBlock Margin="0,5,0,10" TextWrapping="Wrap">
+                            <Run Text="TextBox的编辑操作会被分组到撤销单元中。一个撤销单元可能包含多个编辑操作，这些操作会作为一个整体进行撤销或重做。" />
+                            <LineBreak />
+                            <Run Text="下面的示例演示了如何通过BeginChange()和EndChange()方法将多个编辑操作合并为一个撤销单元。" />
+                        </TextBlock>
+
+                        <TextBox
+                            x:Name="UndoActionTextBox"
+                            Height="80"
+                            AcceptsReturn="True"
+                            Text="点击下方按钮测试撤销单元功能"
+                            TextWrapping="Wrap" />
+
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <Button
+                                Margin="0,0,10,0"
+                                Click="InsertDateTime_Click"
+                                Content="插入日期时间（普通）" />
+                            <Button Click="InsertDateTimeAsUndoAction_Click" Content="插入日期时间（作为一个撤销单元）" />
+                        </StackPanel>
+
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            Text="尝试在文本框中输入内容，然后点击上面的按钮，最后使用Ctrl+Z撤销操作，观察差异。"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!--  实际应用示例  -->
+                <Border Margin="0,20,0,0" Style="{StaticResource SectionBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="实际应用示例" />
+                        <TextBlock Margin="0,5,0,10" TextWrapping="Wrap">
+                            <Run Text="下面是一个简单的文本编辑器示例，演示了如何在实际应用中结合使用撤销和重做功能。它包括撤销和重做功能，以及撤销历史记录跟踪。" />
+                        </TextBlock>
+
+                        <TextBox
+                            x:Name="EditorTextBox"
+                            Height="150"
+                            AcceptsReturn="True"
+                            AcceptsTab="True"
+                            Text="这是一个简单的文本编辑器示例，请尝试编辑内容并使用撤销和重做功能。"
+                            TextChanged="EditorTextBox_TextChanged"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Auto" />
+
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <Button
+                                x:Name="EditorUndoButton"
+                                Width="80"
+                                Margin="0,0,5,0"
+                                Click="EditorUndo_Click"
+                                Content="撤销"
+                                IsEnabled="False" />
+                            <Button
+                                x:Name="EditorRedoButton"
+                                Width="80"
+                                Margin="0,0,5,0"
+                                Click="EditorRedo_Click"
+                                Content="重做"
+                                IsEnabled="False" />
+                            <Button
+                                Width="80"
+                                Click="EditorClear_Click"
+                                Content="清空" />
+                            <Button
+                                Width="120"
+                                Margin="5,0,0,0"
+                                Click="EditorInsertTime_Click"
+                                Content="插入当前时间" />
+                        </StackPanel>
+
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                Grid.Column="0"
+                                Margin="0,0,5,0"
+                                BorderBrush="#DDDDDD"
+                                BorderThickness="1">
+                                <StackPanel Margin="5">
+                                    <TextBlock FontWeight="Bold" Text="撤销历史：" />
+                                    <ListBox
+                                        x:Name="UndoHistoryListBox"
+                                        Height="100"
+                                        Margin="0,5,0,0" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                BorderBrush="#DDDDDD"
+                                BorderThickness="1">
+                                <StackPanel Margin="5">
+                                    <TextBlock FontWeight="Bold" Text="重做历史：" />
+                                    <ListBox
+                                        x:Name="RedoHistoryListBox"
+                                        Height="100"
+                                        Margin="0,5,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <TextBlock
+                            x:Name="EditorStatusTextBlock"
+                            Margin="0,10,0,0"
+                            Foreground="Green" />
+                    </StackPanel>
+                </Border>
+
+                <!--  总结  -->
+                <Border Margin="0,20,0,0" Style="{StaticResource SectionBorderStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="总结" />
+                        <TextBlock TextWrapping="Wrap">
+                            <Run Text="TextBox的撤销和重做功能为用户提供了编辑文本的灵活性和纠错能力。主要特点包括：" />
+                            <LineBreak />
+                            <Run Text="• 默认支持键盘快捷键（Ctrl+Z撤销，Ctrl+Y重做）" />
+                            <LineBreak />
+                            <Run Text="• 可以通过IsUndoEnabled属性控制是否启用撤销功能" />
+                            <LineBreak />
+                            <Run Text="• 可以使用UndoLimit属性设置撤销栈的最大深度" />
+                            <LineBreak />
+                            <Run Text="• 提供CanUndo和CanRedo属性检查是否有可以撤销或重做的操作" />
+                            <LineBreak />
+                            <Run Text="• 允许通过BeginChange()和EndChange()方法将多个编辑操作合并为一个撤销单元" />
+                            <LineBreak />
+                            <Run Text="• 可以通过Undo()和Redo()方法以编程方式执行撤销和重做操作" />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page> 

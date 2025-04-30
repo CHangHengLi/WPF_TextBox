@@ -1,0 +1,467 @@
+<Page
+    x:Class="TextBoxDemo.Pages.DataValidationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TextBoxDemo.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="数据验证"
+    d:DesignHeight="800"
+    d:DesignWidth="1000"
+    Background="Wheat"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="TextBoxErrorStyle" TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)/ErrorContent}" />
+                    <Setter Property="BorderBrush" Value="Red" />
+                    <Setter Property="Background" Value="#FFF0F0" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Margin="20">
+            <TextBlock
+                Margin="0,0,0,20"
+                FontSize="24"
+                FontWeight="Bold"
+                Text="TextBox 数据验证" />
+
+            <Border
+                Margin="0,0,0,20"
+                Padding="10"
+                BorderBrush="#DDDDDD"
+                BorderThickness="1">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Text="数据验证简介" />
+                    <TextBlock Margin="0,0,0,10" TextWrapping="Wrap">
+                        TextBox控件支持多种数据验证方式，可以在用户输入时或数据绑定时进行验证，并以不同方式呈现错误信息。
+                        WPF提供了丰富的验证机制，包括：异常验证、自定义验证规则、IDataErrorInfo接口和INotifyDataErrorInfo接口等。
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  1. 异常验证  -->
+            <GroupBox Margin="0,0,0,20" Header="异常验证">
+                <StackPanel Margin="10">
+                    <TextBlock Margin="0,0,0,10" TextWrapping="Wrap">
+                        当绑定源更新时，如果类型转换器或目标属性引发异常，WPF将捕获异常并作为验证错误显示。<Run FontWeight="Bold">适用范围：</Run>
+                        适合处理简单的类型转换错误，如将字符串转换为数字、日期等类型时产生的异常。</TextBlock>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="年龄: (1-120)" />
+                        <TextBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,0,0,10"
+                            Style="{StaticResource TextBoxErrorStyle}">
+                            <TextBox.Text>
+                                <Binding Path="Age" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:AgeValidationRule Max="120" Min="1" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="0,5,0,0"
+                            FontStyle="Italic"
+                            TextWrapping="Wrap">
+                            尝试输入非数字内容，会触发异常验证错误
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!--  2. 内置验证规则  -->
+            <GroupBox Margin="0,0,0,20" Header="内置验证规则">
+                <StackPanel Margin="10">
+                    <TextBlock Margin="0,0,0,10" TextWrapping="Wrap">
+                        WPF提供了一些内置的验证规则类，如DataErrorValidationRule和ExceptionValidationRule等。<Run FontWeight="Bold">适用范围：</Run>
+                        适合需要快速实现常见验证逻辑的场景，无需编写复杂代码。验证范围从1到100之间。</TextBlock>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="数量: (1-100)" />
+                        <TextBox Grid.Column="1" Style="{StaticResource TextBoxErrorStyle}">
+                            <TextBox.Text>
+                                <Binding Path="Quantity" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:RangeValidationRule
+                                            ErrorMessage="数量必须在1-100之间"
+                                            Max="100"
+                                            Min="1" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!--  3. 自定义验证规则  -->
+            <GroupBox Margin="0,0,0,20" Header="自定义验证规则">
+                <StackPanel Margin="10">
+                    <TextBlock Margin="0,0,0,10" TextWrapping="Wrap">
+                        可以通过继承ValidationRule类来创建自定义验证规则。<Run FontWeight="Bold">适用范围：</Run>
+                        适合实现特定业务逻辑的验证，如邮箱格式检查（必须包含@符号和域名）、密码强度要求（至少6个字符）等复杂验证场景。</TextBlock>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="电子邮件: (有效邮箱格式)" />
+                        <TextBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,0,0,10"
+                            Style="{StaticResource TextBoxErrorStyle}">
+                            <TextBox.Text>
+                                <Binding Path="Email" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:EmailValidationRule ErrorMessage="请输入有效的电子邮件地址" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="密码: (至少6个字符)" />
+                        <TextBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Style="{StaticResource TextBoxErrorStyle}">
+                            <TextBox.Text>
+                                <Binding Path="Password" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:PasswordValidationRule ErrorMessage="密码长度必须至少为6个字符" MinLength="6" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!--  4. IDataErrorInfo接口验证  -->
+            <GroupBox Margin="0,0,0,20" Header="IDataErrorInfo接口验证">
+                <StackPanel Margin="10">
+                    <TextBlock Margin="0,0,0,10" TextWrapping="Wrap">
+                        通过实现IDataErrorInfo接口，可以在视图模型中集中处理验证逻辑。<Run FontWeight="Bold">适用范围：</Run>
+                        适合在视图模型中集中管理验证规则，支持跨字段验证。用户名要求至少3个字符，电话号码要求符合中国手机号格式（1开头的11位数字）。</TextBlock>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="用户名: (至少3个字符)" />
+                        <TextBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,0,0,10"
+                            Style="{StaticResource TextBoxErrorStyle}">
+                            <TextBox.Text>
+                                <Binding
+                                    Path="Username"
+                                    UpdateSourceTrigger="PropertyChanged"
+                                    ValidatesOnDataErrors="True" />
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="电话号码: (11位手机号)" />
+                        <TextBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Style="{StaticResource TextBoxErrorStyle}">
+                            <TextBox.Text>
+                                <Binding
+                                    Path="PhoneNumber"
+                                    UpdateSourceTrigger="PropertyChanged"
+                                    ValidatesOnDataErrors="True" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!--  5. INotifyDataErrorInfo接口验证  -->
+            <GroupBox Margin="0,0,0,20" Header="INotifyDataErrorInfo接口验证">
+                <StackPanel Margin="10">
+                    <TextBlock Margin="0,0,0,10" TextWrapping="Wrap">
+                        INotifyDataErrorInfo接口支持异步验证并能提供多个错误信息。<Run FontWeight="Bold">适用范围：</Run>
+                        适合需要异步验证（如从服务器验证）或需要同时显示多个错误消息的场景。信用卡验证包括号码格式（13-19位数字）和有效期检查（MM/YY格式且未过期）。</TextBlock>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="信用卡号: (13-19位数字)" />
+                        <TextBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,0,0,10"
+                            Style="{StaticResource TextBoxErrorStyle}">
+                            <TextBox.Text>
+                                <Binding
+                                    Path="CreditCardNumber"
+                                    UpdateSourceTrigger="PropertyChanged"
+                                    ValidatesOnNotifyDataErrors="True" />
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="有效期: (MM/YY格式)" />
+                        <TextBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,0,0,10"
+                            Style="{StaticResource TextBoxErrorStyle}">
+                            <TextBox.Text>
+                                <Binding
+                                    Path="ExpiryDate"
+                                    UpdateSourceTrigger="PropertyChanged"
+                                    ValidatesOnNotifyDataErrors="True" />
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <Button
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Padding="10,5"
+                            HorizontalAlignment="Left"
+                            Click="Validate_Click"
+                            Content="验证信用卡信息" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!--  验证错误模板示例  -->
+            <GroupBox Margin="0,0,0,20" Header="自定义错误模板">
+                <StackPanel Margin="10">
+                    <TextBlock Margin="0,0,0,10" TextWrapping="Wrap">
+                        可以自定义错误提示的显示方式，例如在TextBox旁显示错误图标和消息。<Run FontWeight="Bold">适用范围：</Run>
+                        适合需要自定义错误显示UI的场景，可以实现更丰富的视觉反馈。邮政编码验证要求输入6位数字。</TextBlock>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="邮政编码: (6位数字)" />
+                        <TextBox Grid.Column="1" Margin="0,0,0,10">
+                            <TextBox.Text>
+                                <Binding Path="PostalCode" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:PostalCodeValidationRule ErrorMessage="邮政编码必须是6位数字" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <StackPanel>
+                                        <AdornedElementPlaceholder x:Name="textBox" />
+                                        <TextBlock
+                                            Margin="0,3,0,0"
+                                            FontSize="12"
+                                            Foreground="Red"
+                                            Text="{Binding [0].ErrorContent}" />
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                        </TextBox>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!--  总结  -->
+            <Border
+                Margin="0,0,0,20"
+                Padding="10"
+                BorderBrush="#DDDDDD"
+                BorderThickness="1">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Text="TextBox数据验证总结" />
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="Bold">1. 异常验证：</Run>
+                        捕获数据转换中的异常<LineBreak />
+                        <Run FontWeight="Bold">2. 内置验证规则：</Run>
+                        使用WPF提供的ValidationRule<LineBreak />
+                        <Run FontWeight="Bold">3. 自定义验证规则：</Run>
+                        继承ValidationRule创建自定义规则<LineBreak />
+                        <Run FontWeight="Bold">4. IDataErrorInfo接口：</Run>
+                        在视图模型中集中处理验证<LineBreak />
+                        <Run FontWeight="Bold">5. INotifyDataErrorInfo接口：</Run>
+                        支持异步验证和多个错误<LineBreak />
+                        <Run FontWeight="Bold">6. 验证错误显示：</Run>
+                        可自定义错误提示的显示方式</TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  基本验证和正则表达式验证示例  -->
+            <GroupBox Margin="0,0,0,20" Header="其他验证方式示例">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  基本验证示例  -->
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        Text="基本验证:" />
+                    <StackPanel
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="0,0,0,10">
+                        <TextBox
+                            x:Name="txtBasicValidation"
+                            Margin="0,0,0,5"
+                            TextChanged="TxtBasicValidation_TextChanged" />
+                        <TextBlock
+                            FontStyle="Italic"
+                            Foreground="Gray"
+                            Text="至少需要输入3个字符" />
+                    </StackPanel>
+
+                    <!--  数字输入验证  -->
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        Text="数字输入:" />
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="0,0,0,10">
+                        <TextBox
+                            x:Name="txtNumeric"
+                            Margin="0,0,0,5"
+                            PreviewKeyDown="TxtNumeric_PreviewKeyDown"
+                            PreviewTextInput="TxtNumeric_PreviewTextInput" />
+                        <TextBlock
+                            FontStyle="Italic"
+                            Foreground="Gray"
+                            Text="仅允许输入数字" />
+                    </StackPanel>
+
+                    <!--  邮箱验证  -->
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        Text="邮箱验证:" />
+                    <StackPanel Grid.Row="2" Grid.Column="1">
+                        <TextBox
+                            x:Name="txtEmailValidation"
+                            Margin="0,0,0,5"
+                            LostFocus="TxtEmail_LostFocus" />
+                        <TextBlock
+                            FontStyle="Italic"
+                            Foreground="Gray"
+                            Text="失去焦点时验证邮箱格式" />
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</Page> 
