@@ -1,0 +1,106 @@
+<Page x:Class="TextBoxDemo.Pages.SpecialTextBoxPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TextBoxDemo.Pages"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      Background="Wheat"
+      Title="特殊文本框示例">
+    
+    <ScrollViewer>
+        <StackPanel Margin="20">
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="特殊文本框：PasswordBox与RichTextBox" />
+            
+            <!-- PasswordBox 示例 -->
+            <Border Style="{StaticResource SectionBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="PasswordBox控件" Style="{StaticResource SectionHeaderStyle}"/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                        PasswordBox专门用于输入密码，它会将用户输入的文本显示为掩码字符，保护敏感信息。
+                    </TextBlock>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                        <TextBlock Text="密码：" VerticalAlignment="Center" Width="60"/>
+                        <PasswordBox x:Name="pwdBox"
+                                    Password="初始密码"
+                                    PasswordChar="*"
+                                    MaxLength="20"
+                                    Width="200"
+                                    Height="30"
+                                    PasswordChanged="PasswordBox_PasswordChanged"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                        <TextBlock Text="密码长度：" VerticalAlignment="Center" Width="80"/>
+                        <TextBlock x:Name="passwordLength" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                        <TextBlock Text="密码强度：" VerticalAlignment="Center" Width="80"/>
+                        <Rectangle x:Name="strengthIndicator" Width="100" Height="20"/>
+                        <TextBlock x:Name="strengthText" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,20,0,5">
+                        <TextBlock Text="掩码符号：" VerticalAlignment="Center" Width="80"/>
+                        <ComboBox x:Name="cmbMaskChar" Width="80" SelectionChanged="MaskChar_SelectionChanged">
+                            <ComboBoxItem Content="*" IsSelected="True"/>
+                            <ComboBoxItem Content="•"/>
+                            <ComboBoxItem Content="#"/>
+                            <ComboBoxItem Content="X"/>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <!-- RichTextBox 示例 -->
+            <Border Style="{StaticResource SectionBorderStyle}" Margin="0,20,0,0">
+                <StackPanel>
+                    <TextBlock Text="RichTextBox控件" Style="{StaticResource SectionHeaderStyle}"/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                        RichTextBox支持富文本编辑，可以设置不同的格式，包括字体、颜色、段落样式等。
+                    </TextBlock>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button Content="粗体" Width="50" Margin="2" Click="Bold_Click"/>
+                        <Button Content="斜体" Width="50" Margin="2" Click="Italic_Click"/>
+                        <Button Content="下划线" Width="60" Margin="2" Click="Underline_Click"/>
+                        <ComboBox x:Name="cmbFontFamily" Width="120" Margin="2" SelectionChanged="FontFamily_SelectionChanged">
+                            <ComboBoxItem Content="宋体" IsSelected="True"/>
+                            <ComboBoxItem Content="微软雅黑"/>
+                            <ComboBoxItem Content="Arial"/>
+                            <ComboBoxItem Content="Times New Roman"/>
+                        </ComboBox>
+                        <ComboBox x:Name="cmbFontSize" Width="60" Margin="2" SelectionChanged="FontSize_SelectionChanged">
+                            <ComboBoxItem Content="10"/>
+                            <ComboBoxItem Content="12" IsSelected="True"/>
+                            <ComboBoxItem Content="14"/>
+                            <ComboBoxItem Content="16"/>
+                            <ComboBoxItem Content="18"/>
+                            <ComboBoxItem Content="20"/>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button Content="红色" Width="50" Margin="2" Click="Red_Click"/>
+                        <Button Content="绿色" Width="50" Margin="2" Click="Green_Click"/>
+                        <Button Content="蓝色" Width="50" Margin="2" Click="Blue_Click"/>
+                        <Button Content="黑色" Width="50" Margin="2" Click="Black_Click"/>
+                    </StackPanel>
+                    
+                    <RichTextBox x:Name="richTextBox" Height="200" Width="500" HorizontalAlignment="Left">
+                        <FlowDocument>
+                            <Paragraph>
+                                <Run>这是RichTextBox控件示例，支持富文本编辑。</Run>
+                            </Paragraph>
+                            <Paragraph>
+                                <Run>您可以设置不同的格式，如粗体、斜体、颜色等。</Run>
+                            </Paragraph>
+                        </FlowDocument>
+                    </RichTextBox>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page> 

@@ -60,5 +60,15 @@ namespace TextBoxDemo
         {
             MainContent.Navigate(new ApplicationsPage());
         }
+        
+        private void SearchDemo_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Navigate(new SearchDemoPage());
+        }
+        
+        private void SpecialTextBox_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Navigate(new SpecialTextBoxPage());
+        }
     }
 } 

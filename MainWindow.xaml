@@ -92,6 +92,18 @@
                             HorizontalContentAlignment="Left"
                             Click="Applications_Click"
                             Content="应用场景示例" />
+                        <Button
+                            Margin="5"
+                            Padding="10,5"
+                            HorizontalContentAlignment="Left"
+                            Click="SearchDemo_Click"
+                            Content="实时搜索示例" />
+                        <Button
+                            Margin="5"
+                            Padding="10,5"
+                            HorizontalContentAlignment="Left"
+                            Click="SpecialTextBox_Click"
+                            Content="特殊文本框示例" />
                     </StackPanel>
                 </ScrollViewer>
             </Border>
