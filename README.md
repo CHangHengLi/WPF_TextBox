@@ -2,6 +2,8 @@
 
 这个项目是WPF TextBox控件的详细教学演示应用，用于展示TextBox控件的各种特性和使用方法。
 
+![image](https://github.com/user-attachments/assets/6c1dc701-ec08-440c-8973-34f98ae77862)
+
 ## 项目内容
 
 本项目详细展示了TextBox控件的以下功能：
@@ -35,14 +37,3 @@
 - `Resources/`: 包含样式和资源文件
 - `Pages/`: 包含各个功能演示页面
 
-## 如何编译
-
-```
-dotnet build TextBoxDemo.csproj
-```
-
-## 如何运行
-
-```
-dotnet run --project TextBoxDemo.csproj
-``` 
